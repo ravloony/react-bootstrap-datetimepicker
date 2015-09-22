@@ -2,15 +2,16 @@ import React, { Component, PropTypes } from "react";
 import DateTimePickerDays from "./DateTimePickerDays";
 import DateTimePickerMonths from "./DateTimePickerMonths";
 import DateTimePickerYears from "./DateTimePickerYears";
+import moment from "moment";
 
 export default class DateTimePickerDate extends Component {
-  static propTypes = {
-    subtractMonth: PropTypes.func.isRequired,
-    addMonth: PropTypes.func.isRequired,
-    viewDate: PropTypes.object.isRequired,
-    selectedDate: PropTypes.object.isRequired,
-    showToday: PropTypes.bool,
-    viewMode: PropTypes.oneOfType([
+static propTypes = {
+subtractMonth: PropTypes.func.isRequired,
+addMonth: PropTypes.func.isRequired,
+viewDate: PropTypes.object.isRequired,
+selectedDate: PropTypes.object.isRequired,
+showToday: PropTypes.bool,
+viewMode: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.number
     ]),
@@ -23,7 +24,12 @@ export default class DateTimePickerDate extends Component {
     addDecade: PropTypes.func.isRequired,
     subtractDecade: PropTypes.func.isRequired,
     minDate: PropTypes.object,
-    maxDate: PropTypes.object
+    maxDate: PropTypes.object,
+    moment: PropTypes.object
+  }
+
+  static defaultProps = {
+    moment: moment
   }
 
   constructor(props) {
@@ -82,6 +88,7 @@ export default class DateTimePickerDate extends Component {
     if (this.state.daysDisplayed) {
       return (
       <DateTimePickerDays
+            moment={this.props.moment}
             addMonth={this.props.addMonth}
             daysOfWeekDisabled={this.props.daysOfWeekDisabled}
             maxDate={this.props.maxDate}
@@ -103,6 +110,7 @@ export default class DateTimePickerDate extends Component {
     if (this.state.monthsDisplayed) {
       return (
       <DateTimePickerMonths
+            moment={this.props.moment}
             addYear={this.props.addYear}
             selectedDate={this.props.selectedDate}
             setViewMonth={this.setViewMonth}

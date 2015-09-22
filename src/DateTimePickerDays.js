@@ -13,11 +13,13 @@ export default class DateTimePickerDays extends Component {
     setSelectedDate: PropTypes.func.isRequired,
     showMonths: PropTypes.func.isRequired,
     minDate: PropTypes.object,
-    maxDate: PropTypes.object
+    maxDate: PropTypes.object,
+    moment: PropTypes.object
   }
 
   static defaultProps = {
-    showToday: true
+    showToday: true,
+    moment: moment
   }
 
   renderDays = () => {
@@ -27,7 +29,7 @@ export default class DateTimePickerDays extends Component {
     prevMonth = this.props.viewDate.clone().subtract(1, "months");
     days = prevMonth.daysInMonth();
     prevMonth.date(days).startOf("week");
-    nextMonth = moment(prevMonth).clone().add(42, "d");
+    nextMonth = this.props.moment(prevMonth).clone().add(42, "d");
     minDate = this.props.minDate ? this.props.minDate.clone().subtract(1, "days") : this.props.minDate;
     maxDate = this.props.maxDate ? this.props.maxDate.clone() : this.props.maxDate;
     html = [];
@@ -41,7 +43,7 @@ export default class DateTimePickerDays extends Component {
       } else if (prevMonth.year() > year || (prevMonth.year() === year && prevMonth.month() > month)) {
         classes.new = true;
       }
-      if (prevMonth.isSame(moment({
+      if (prevMonth.isSame(this.props.moment({
         y: this.props.selectedDate.year(),
         M: this.props.selectedDate.month(),
         d: this.props.selectedDate.date()
@@ -49,7 +51,7 @@ export default class DateTimePickerDays extends Component {
         classes.active = true;
       }
       if (this.props.showToday) {
-        if (prevMonth.isSame(moment(), "day")) {
+        if (prevMonth.isSame(this.props.moment(), "day")) {
           classes.today = true;
         }
       }
@@ -58,7 +60,7 @@ export default class DateTimePickerDays extends Component {
       }
       if (this.props.daysOfWeekDisabled.length > 0) classes.disabled = this.props.daysOfWeekDisabled.indexOf(prevMonth.day()) !== -1;
       cells.push(<td key={prevMonth.month() + "-" + prevMonth.date()} className={classnames(classes)} onClick={this.props.setSelectedDate}>{prevMonth.date()}</td>);
-      if (prevMonth.weekday() === moment().endOf("week").weekday()) {
+      if (prevMonth.weekday() === this.props.moment().endOf("week").weekday()) {
         row = <tr key={prevMonth.month() + "-" + prevMonth.date()}>{cells}</tr>;
         html.push(row);
         cells = [];
@@ -76,7 +78,7 @@ export default class DateTimePickerDays extends Component {
             <tr>
               <th className="prev" onClick={this.props.subtractMonth}>‹</th>
 
-              <th className="switch" colSpan="5" onClick={this.props.showMonths}>{moment.months()[this.props.viewDate.month()]} {this.props.viewDate.year()}</th>
+              <th className="switch" colSpan="5" onClick={this.props.showMonths}>{this.props.moment.months()[this.props.viewDate.month()]} {this.props.viewDate.year()}</th>
 
               <th className="next" onClick={this.props.addMonth}>›</th>
             </tr>

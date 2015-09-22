@@ -9,13 +9,18 @@ export default class DateTimePickerMonths extends Component {
     viewDate: PropTypes.object.isRequired,
     selectedDate: PropTypes.object.isRequired,
     showYears: PropTypes.func.isRequired,
-    setViewMonth: PropTypes.func.isRequired
+    setViewMonth: PropTypes.func.isRequired,
+    moment: PropTypes.object
+  }
+
+  static defaultProps = {
+    moment: moment
   }
 
   renderMonths = () => {
     var classes, i, month, months, monthsShort;
     month = this.props.selectedDate.month();
-    monthsShort = moment.monthsShort();
+    monthsShort = this.props.moment.monthsShort();
     i = 0;
     months = [];
     while (i < 12) {

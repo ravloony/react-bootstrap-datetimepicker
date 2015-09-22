@@ -14,7 +14,8 @@ export default class DateTimeField extends Component {
     mode: Constants.MODE_DATETIME,
     onChange: (x) => {
       console.log(x);
-    }
+    },
+    moment: moment
   }
 
   resolvePropsInputFormat = () => {
@@ -42,7 +43,8 @@ export default class DateTimeField extends Component {
     direction: PropTypes.string,
     showToday: PropTypes.bool,
     viewMode: PropTypes.string,
-    daysOfWeekDisabled: PropTypes.arrayOf(PropTypes.integer)
+    daysOfWeekDisabled: PropTypes.arrayOf(PropTypes.integer),
+    moment: PropTypes.object
   }
 
   state = {
@@ -56,22 +58,22 @@ export default class DateTimeField extends Component {
         left: -9999,
         zIndex: "9999 !important"
       },
-      viewDate: moment(this.props.dateTime, this.props.format, true).startOf("month"),
-      selectedDate: moment(this.props.dateTime, this.props.format, true),
-      inputValue: typeof this.props.defaultText !== "undefined" ? this.props.defaultText : moment(this.props.dateTime, this.props.format, true).format(this.resolvePropsInputFormat())
+      viewDate: this.props.moment(this.props.dateTime, this.props.format, true).startOf("month"),
+      selectedDate: this.props.moment(this.props.dateTime, this.props.format, true),
+      inputValue: typeof this.props.defaultText !== "undefined" ? this.props.defaultText : this.props.moment(this.props.dateTime, this.props.format, true).format(this.resolvePropsInputFormat())
   }
 
   componentWillReceiveProps = (nextProps) => {
     let state = {};
     if (nextProps.inputFormat !== this.props.inputFormat) {
         state.inputFormat = nextProps.inputFormat;
-        state.inputValue = moment(nextProps.dateTime, nextProps.format, true).format(nextProps.inputFormat);
+        state.inputValue = this.props.moment(nextProps.dateTime, nextProps.format, true).format(nextProps.inputFormat);
     }
 
-    if (nextProps.dateTime !== this.props.dateTime && moment(nextProps.dateTime, nextProps.format, true).isValid()) {
-      state.viewDate = moment(nextProps.dateTime, nextProps.format, true).startOf("month");
-      state.selectedDate = moment(nextProps.dateTime, nextProps.format, true);
-      state.inputValue = moment(nextProps.dateTime, nextProps.format, true).format(nextProps.inputFormat ? nextProps.inputFormat : this.state.inputFormat);
+    if (nextProps.dateTime !== this.props.dateTime && this.props.moment(nextProps.dateTime, nextProps.format, true).isValid()) {
+      state.viewDate = this.props.moment(nextProps.dateTime, nextProps.format, true).startOf("month");
+      state.selectedDate = this.props.moment(nextProps.dateTime, nextProps.format, true);
+      state.inputValue = this.props.moment(nextProps.dateTime, nextProps.format, true).format(nextProps.inputFormat ? nextProps.inputFormat : this.state.inputFormat);
     }
     return this.setState(state);
   }
@@ -80,23 +82,23 @@ export default class DateTimeField extends Component {
 
   onChange = (event) => {
     const value = event.target == null ? event : event.target.value;
-    if (moment(value, this.state.inputFormat, true).isValid()) {
+    if (this.props.moment(value, this.state.inputFormat, true).isValid()) {
       this.setState({
-        selectedDate: moment(value, this.state.inputFormat, true),
-        viewDate: moment(value, this.state.inputFormat, true).startOf("month")
+        selectedDate: this.props.moment(value, this.state.inputFormat, true),
+        viewDate: this.props.moment(value, this.state.inputFormat, true).startOf("month")
       });
     }
 
     return this.setState({
       inputValue: value
     }, function() {
-      return this.props.onChange(moment(this.state.inputValue, this.state.inputFormat, true).format(this.props.format), value);
+      return this.props.onChange(this.props.moment(this.state.inputValue, this.state.inputFormat, true).format(this.props.format), value);
     });
 
   }
 
   getValue = () => {
-    return moment(this.state.inputValue, this.props.inputFormat, true).format(this.props.format);
+    return this.props.moment(this.state.inputValue, this.props.inputFormat, true).format(this.props.format);
   }
 
   setSelectedDate = (e) => {
